@@ -1,0 +1,142 @@
+<?php
+/**
+ * File-Extender JS
+ * 
+ * @package File-Extender
+ * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU Public License version 2
+ * @author Jeff Tilson
+ * @copyright THINK Global School 2010
+ * @link http://www.thinkglobalschool.com/
+ * 
+ */
+?>
+//<script>
+elgg.provide('elgg.fileextender');
+
+elgg.fileextender.init = function() {
+	// Click handler for the file submit button
+	$('#submit-file').live('click', elgg.fileextender.submitClick);
+
+	// Init fileupload
+	$('.file-drag-upload').fileupload({
+        dataType: 'json',
+		dropZone: $('.file-dropzone'),
+		fileInput: $('input.file-drag-upload'),
+		drop: function (e, data) {
+			// Remove drag class
+			$(e.originalEvent.target).removeClass('file-dropzone-drag');
+
+			// Make sure we're not dropping multiple files
+			if (data.files.length > 1) {
+				elgg.register_error(elgg.echo('file-extender:toomanyfiles'));
+				e.preventDefault();
+			}
+		},
+		add: function (e, data) {
+			// Get the dropped file
+			var file = data.files[0];
+
+			// Fade in the rest of the form
+			$('.file-extender-hidden-form').fadeIn('slow');
+
+			// Set title on the form
+			$('.file-drop-title').val(file.name);
+
+			// Set file data on the input, to be used with click event later
+			$('.file-drag-upload').data('data', data);
+		},
+		dragover: function (e, data) {
+			// Add fancy dragover class
+			$(e.originalEvent.target).addClass('file-dropzone-drag');
+		},
+        done: function (e, data) {
+			if (data.result.output.system_messages) {
+				elgg.register_error(data.result.output.system_messages.error);
+				elgg.system_message(data.result.output.system_messages.success);
+			}
+			if (data.result.output.status >= 0) {
+				//
+			}
+        }
+    });
+}
+
+// Destroy the file uploader and unbind any events
+elgg.fileextender.destroy = function() {
+	$('.file-drag-upload').fileupload('destroy');
+	$('#submit-file').die();
+}
+
+// Calculate file size for display
+elgg.fileextender.calculateSize = function(size) {
+    if (typeof size !== 'number') {
+        return '';
+    }
+    if (size >= 1000000000) {
+        return (size / 1000000000).toFixed(2) + ' GB';
+    }
+    if (size >= 1000000) {
+        return (size / 1000000).toFixed(2) + ' MB';
+    }
+    return (size / 1000).toFixed(2) + ' KB';
+}
+
+// Click handler for the submit button 
+elgg.fileextender.submitClick = function(event) {
+
+	// Store the button
+	var $button = $(this);
+
+	// Show a little spinner
+	$(this).replaceWith("<div id='file-upload-spinner' class='elgg-ajax-loader'></div>");
+
+	// Make sure tinymce inputs have set the text
+	if (typeof(tinyMCE) != 'undefined') {
+		tinyMCE.triggerSave();
+	}
+
+	// Get file data (set in the add callback of the fileuploader)
+	var data = $('.file-drag-upload').data('data');
+
+	// Returns an object, with these fancy callbacks
+	var jqXHR = $('.file-drag-upload').fileupload('send',{files: data.files})
+		.done(function (result, textStatus, jqXHR) {
+			// Success/done check elgg status's
+			if (result.status != -1) {
+				// Display success
+				elgg.system_message(result.system_messages.success);
+
+				// Prevent the 'are you sure you want to leave' popup
+				window.onbeforeunload = function() {};
+
+				// Good to go, forward to output
+				window.location = result.output;
+			} else {
+				// There was an error, display it
+				elgg.register_error(result.system_messages.error);
+
+				// Enable the button (try again?)
+				$('#file-upload-spinner').replaceWith($button);
+			}
+		})
+    	.fail(function (jqXHR, textStatus, errorThrown) {
+			// If we're here, there was an error making the request
+			// or we got some screwy response.. display an error and log it for debugging
+			elgg.register_error(elgg.echo('file:uploadfailed'));
+			console.log('fail');
+			console.log(errorThrown);
+			console.log(textStatus);
+			console.log(jqXHR);
+
+			// Enable the button
+			$('#file-upload-spinner').replaceWith($button);
+		})
+    	.always(function (result, textStatus, jqXHR) {
+			// Just keeping this here for future use/testing
+		});
+
+	event.preventDefault();
+}
+
+elgg.register_hook_handler('init', 'system', elgg.fileextender.init);
+//</script>
