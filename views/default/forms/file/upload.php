@@ -9,6 +9,9 @@
  * @link http://www.thinkglobalschool.com/
  * 
  */
+elgg_load_js('elgg.fileextender');
+elgg_load_js('jQuery-File-Upload');
+elgg_load_css('elgg.fileextender');
 
 // once elgg_view stops throwing all sorts of junk into $vars, we can use 
 $title = elgg_extract('title', $vars, '');
@@ -27,15 +30,33 @@ $guid = elgg_extract('guid', $vars, null);
 if ($guid) {
 	$file_label = elgg_echo("file:replace");
 	$submit_label = elgg_echo('save');
+	$submit_class = 'file-editing';
 
 	// Hidden file input
 	$file_hidden = elgg_view('input/hidden', array(
 		'name' => 'file_guid', 
 		'value' => $guid
 	));
+
+	$file = get_entity($guid);
+	$filename = $file->originalfilename;
+	$filesize = file_calculate_size($file->size());
+	$filereplace = elgg_echo('file-extender:replace');
+
+	$drop_zone = <<<HTML
+		<div id='file-dropzone-div'>
+			<span class='file-drop-info'>
+				<span class='file-name'>$filename</span>
+				<span class='file-size'>$filesize</span>
+				<spac class='file-replace'>$filereplace</span>
+			</span>
+		</div>
+HTML;
 } else {
 	$file_label = elgg_echo("file:file");
 	$submit_label = elgg_echo('upload');
+	$hidden_class = 'file-extender-hidden-form';
+	$drop_zone = "<div id='file-dropzone-div' class='file-dropzone file-dropzone-background'></div>";
 }
 
 $file_input = elgg_view('input/file', array(
@@ -73,49 +94,52 @@ $container_hidden = elgg_view('input/hidden', array(
 	'value' => $container_guid
 ));
 
-// Get logged in user groups
-$groups = elgg_get_entities_from_relationship_count(array(
-	'type' => 'group',
-	'relationship' => 'member',
-	'relationship_guid' => elgg_get_logged_in_user_guid(),
-	'inverse_relationship' => FALSE,
-	'full_view' => FALSE,
-));
 
-if (count($groups)) {
-	$groups_array = array('' => elgg_echo('file-extender:none'));
-
-	// Add each group to group array for dropdown
-	foreach ($groups as $g) {
-		$groups_array[$g->guid] = $g->name;
-	}
-	
-	$group_label = elgg_echo('file-extender:group');
-
-	$group_select = elgg_view('input/dropdown', array(
-		'name' => 'group_guid',
-		// 'value' => $group->getURL(), @TODO show current group if viewing a group?
-		'options_values' => $groups_array,
+if (!elgg_instanceof(elgg_get_page_owner_entity(), 'group') && !$guid) {
+	// Get logged in user groups
+	$groups = elgg_get_entities_from_relationship_count(array(
+		'type' => 'group',
+		'relationship' => 'member',
+		'relationship_guid' => elgg_get_logged_in_user_guid(),
+		'inverse_relationship' => FALSE,
+		'full_view' => FALSE,
 	));
+
+	if (count($groups)) {
+		$groups_array = array('' => elgg_echo('file-extender:none'));
+
+		// Add each group to group array for dropdown
+		foreach ($groups as $g) {
+			$groups_array[$g->guid] = $g->name;
+		}
 	
-	$group_input = <<<HTML
-		<div>
-			<label>$group_label</label>
-			$group_select
-		</div><br />
+		$group_label = elgg_echo('file-extender:group');
+
+		$group_select = elgg_view('input/dropdown', array(
+			'name' => 'group_guid',
+			// 'value' => $group->getURL(), @TODO show current group if viewing a group?
+			'options_values' => $groups_array,
+		));
+	
+		$group_input = <<<HTML
+			<div>
+				<label>$group_label</label>
+				$group_select
+			</div><br />
 HTML;
+	}
 }
 
 $submit_input = elgg_view('input/submit', array(
 	'value' => $submit_label,
 	'id' => 'submit-file',
+	'class' => "elgg-button elgg-button-submit $submit_class",
 ));
 
 $content = <<<HTML
-	<div class='file-dropzone file-dropzone-background'>
-	</div>
+	$drop_zone
 	$file_input
-	<div class='file-extender-hidden-form'>
+	<div class='$hidden_class'>
 		<div>
 			<label>$title_label</label><br />
 			$title_input

@@ -20,7 +20,7 @@ elgg.fileextender.init = function() {
 	// Init fileupload
 	$('.file-drag-upload').fileupload({
         dataType: 'json',
-		dropZone: $('.file-dropzone'),
+		dropZone: $('#file-dropzone-div'),
 		fileInput: $('input.file-drag-upload'),
 		drop: function (e, data) {
 			// Remove drag class
@@ -44,20 +44,30 @@ elgg.fileextender.init = function() {
 
 			// Set file data on the input, to be used with click event later
 			$('.file-drag-upload').data('data', data);
+
+			// Remove dropzone classes and display info
+			var $div = $('#file-dropzone-div');
+			$div.removeClass('file-dropzone file-dropzone-background');
+
+			var $drop_name = $(document.createElement('span'));
+			$drop_name.addClass('file-name');
+			$drop_name.html(file.name);
+
+			var $drop_size = $(document.createElement('span'));
+			$drop_size.addClass('file-size');
+			$drop_size.html(elgg.fileextender.calculateSize(file.size));
+
+			var $drop_info = $(document.createElement('span'));
+			$drop_info.addClass('file-drop-info');
+			$drop_info.append($drop_name);
+			$drop_info.append($drop_size);
+
+			$div.html($drop_info);
 		},
 		dragover: function (e, data) {
 			// Add fancy dragover class
 			$(e.originalEvent.target).addClass('file-dropzone-drag');
-		},
-        done: function (e, data) {
-			if (data.result.output.system_messages) {
-				elgg.register_error(data.result.output.system_messages.error);
-				elgg.system_message(data.result.output.system_messages.success);
-			}
-			if (data.result.output.status >= 0) {
-				//
-			}
-        }
+		}
     });
 }
 
@@ -83,6 +93,14 @@ elgg.fileextender.calculateSize = function(size) {
 
 // Click handler for the submit button 
 elgg.fileextender.submitClick = function(event) {
+	var data = $('.file-drag-upload').data('data');
+
+	// If we're editing a file, check to see if a new file has been added..
+	// data will equal 'undefined' if not.. in that case we're just updating
+	// the files title/desc/tags/etc.. go ahead with a normal submit
+	if ($(this).hasClass('file-editing') && data == undefined) {
+		return true;
+	}
 
 	// Store the button
 	var $button = $(this);

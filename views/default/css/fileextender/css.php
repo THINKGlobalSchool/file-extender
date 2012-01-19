@@ -39,3 +39,31 @@
 .file-extender-hidden-form {
 	display: none;
 }
+
+.file-drop-info {
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	border: 1px solid #CCCCCC;
+	display: block;
+	margin-top: 1px;
+	padding: 10px;
+}
+
+.file-drop-info .file-size {
+	color: #666666;
+	font-size: 1.2em;
+	margin-left: 20px;
+}
+
+.file-drop-info .file-name {
+	color: #333333;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.file-drop-info .file-replace {
+	font-size: 1.2em;
+	color: #AAAAAA;
+	float: right;
+}

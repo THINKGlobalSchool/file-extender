@@ -16,11 +16,26 @@ $title = get_input("title");
 $desc = get_input("description");
 $access_id = (int) get_input("access_id");
 $container_guid = (int) get_input('container_guid', 0);
+$group_guid = (int) get_input('group_guid', NULL);
 $guid = (int) get_input('file_guid');
 $tags = get_input("tags");
 
 if ($container_guid == 0) {
 	$container_guid = elgg_get_logged_in_user_guid();
+}
+
+// Check to make sure we're not already uploading to a group, and that we have a selected group
+if (!elgg_instanceof(get_entity($container_guid), 'group') && $group_guid) {
+	$group = get_entity($group_guid);
+
+	// Make sure we have a group, and that the user can add items to it
+	if (elgg_instanceof($group, 'group') && $group->canWriteToContainer()) {
+		$container_guid = $group_guid; // We were passed a group guid
+	} else {
+		// Invalid group or no permissions
+		register_error(elgg_echo('file-extender:grouperror'));
+		forward(REFERER);
+	}
 }
 
 elgg_make_sticky_form('file');
@@ -174,10 +189,16 @@ if ($new_file) {
 
 	$container = get_entity($container_guid);
 	if (elgg_instanceof($container, 'group')) {
-		echo elgg_get_site_url() . "file/group/$container->guid/all";
+		// Check XHR
+		if (elgg_is_xhr()) {
+			echo elgg_get_site_url() . "file/group/$container->guid/all";
+		}
 		forward("file/group/$container->guid/all");
 	} else {
-		echo elgg_get_site_url() . "file/owner/$container->username";
+		// Check XHR
+		if (elgg_is_xhr()) {
+			echo elgg_get_site_url() . "file/owner/$container->username";
+		}
 		forward("file/owner/$container->username");
 	}
 
@@ -187,6 +208,10 @@ if ($new_file) {
 	} else {
 		register_error(elgg_echo("file:uploadfailed"));
 	}
-	echo $file->getURL();
+
+	// Check XHR
+	if (elgg_is_xhr()) {
+		echo $file->getURL();
+	}
 	forward($file->getURL());
 }	
