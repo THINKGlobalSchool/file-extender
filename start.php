@@ -28,7 +28,7 @@ function file_extender_init() {
 
 	// Register CSS
 	$extender_css = elgg_get_simplecache_url('css', 'fileextender/css');
-	elgg_register_simplecache_view('js/fileextender/css');
+	elgg_register_simplecache_view('css/fileextender/css');
 	elgg_register_css('elgg.fileextender', $extender_css);
 
 	// Extend file composer view
