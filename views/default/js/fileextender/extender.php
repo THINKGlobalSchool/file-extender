@@ -33,7 +33,7 @@ elgg.fileextender.init = function() {
 			}
 
 			// Check file size
-			if (data.files[0].size > 8388607) {
+			if (data.files[0].size >= 20971520) {
 				elgg.register_error(elgg.echo('file-extender:filetoolarge'));
 				e.preventDefault();
 			}

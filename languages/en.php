@@ -14,7 +14,7 @@ $english = array(
 	'file-extender:group' => 'Post to group',
 	'file-extender:none' => 'None',
 	'file-extender:toomanyfiles' => 'You can only upload one file at a time',
-	'file-extender:filetoolarge' => 'File size must be less than 8MB',
+	'file-extender:filetoolarge' => 'File size must be less than 20MB',
 	'file-extender:grouperror' => 'You cannot post files to this group',
 	'file-extender:replace' => '(Drop new file to replace)',
 );
