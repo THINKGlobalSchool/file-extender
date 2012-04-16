@@ -13,6 +13,8 @@
 //<script>
 elgg.provide('elgg.fileextender');
 
+elgg.fileextender.post_max_size = <?php echo ini_get("post_max_size"); ?>;
+
 elgg.fileextender.init = function() {
 	// Click handler for the file submit button
 	$('#submit-file').live('click', elgg.fileextender.submitClick);
@@ -33,7 +35,7 @@ elgg.fileextender.init = function() {
 			}
 
 			// Check file size
-			if (data.files[0].size >= 20971520) {
+			if (data.files[0].size > elgg.fileextender.post_max_size) {
 				elgg.register_error(elgg.echo('file-extender:filetoolarge'));
 				e.preventDefault();
 			}
