@@ -40,6 +40,9 @@ function file_extender_init() {
 	// Register our own action
 	$action_path = elgg_get_plugins_path() . 'file-extender/actions/file';
 	elgg_register_action("file/upload", "$action_path/upload.php");
+
+	// Register a hook handler to post process file views
+	elgg_register_plugin_hook_handler('view', 'object/file', 'file_extender_object_view_handler');
 }
 
 // Calculate file size for display
@@ -54,4 +57,21 @@ function file_calculate_size($size) {
         return number_format(($size / 1000000), 2) . ' MB';
     }
     return number_format(($size / 1000), 2) . ' KB';
+}
+
+/**
+ * Post process file object views to replace file icon link
+ *
+ * @param unknown_type $hook
+ * @param unknown_type $type
+ * @param unknown_type $return
+ * @param unknown_type $params
+ * @return unknown
+ */
+function file_extender_object_view_handler($hook, $type, $return, $params) {
+	$file = $params['vars']['entity'];
+	// Replace the first occurance (the file icon's) link with a direct download link
+	$download_url = elgg_get_site_url() . "file/download/$file->guid";
+	$return = (substr_replace($return, $download_url, strpos($return, $file->getURL()), strlen($file->getURL())));
+	return $return;
 }
