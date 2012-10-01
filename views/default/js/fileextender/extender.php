@@ -18,6 +18,13 @@ elgg.fileextender.post_max_size = <?php echo ini_get("post_max_size"); ?>;
 elgg.fileextender.init = function() {
 	// Click handler for the file submit button
 	$('#submit-file').live('click', elgg.fileextender.submitClick);
+	
+	// Change handler for the old-school browse input
+	$(document).delegate('.file-browse .elgg-input-file', 'change', function(event){
+		// Hide the file input and container
+		console.log($('.file-browse'));
+
+	});
 
 	// Init fileupload
 	$('.file-drag-upload').fileupload({
@@ -46,6 +53,9 @@ elgg.fileextender.init = function() {
 
 			// Fade in the rest of the form
 			$('.file-extender-hidden-form').fadeIn('slow');
+			
+			// Fade out the file input container
+			$('.file-browse').toggle();
 
 			// Set title on the form
 			$('.file-drop-title').val(file.name);

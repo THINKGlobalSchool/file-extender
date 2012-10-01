@@ -138,7 +138,10 @@ $submit_input = elgg_view('input/submit', array(
 
 $content = <<<HTML
 	$drop_zone
-	$file_input
+	<div class='file-browse'>
+		<div class='file-upload-or'>OR</div>
+		<center>$file_input</center>
+	</div>
 	<div class='$hidden_class'>
 		<div>
 			<label>$title_label</label><br />

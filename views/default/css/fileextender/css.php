@@ -11,9 +11,6 @@
  */
 ?>
 
-.file-drag-upload {
-	display: none;
-}
 
 .file-dropzone {
 	-webkit-border-radius: 26px;
@@ -24,6 +21,27 @@
 	margin-bottom: 10px;
 	width: 200px;
 	height: 150px;
+}
+
+.file-browse {
+
+}
+
+.file-browse .elgg-input-file {
+	width: 50%;
+}
+
+.elgg-composer .file-browse .elgg-input-file {
+	width: 72%;
+}
+
+.file-browse .file-upload-or {
+	vertical-align: middle;
+	text-align: center;
+	font-weight: bold;
+	font-size: 20px;
+	width: 100%;
+	margin-bottom: 10px;
 }
 
 .file-dropzone-background {
