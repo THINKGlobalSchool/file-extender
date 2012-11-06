@@ -158,7 +158,7 @@ elgg.fileextender.submitClick = function(event) {
     	.fail(function (jqXHR, textStatus, errorThrown) {
 			// If we're here, there was an error making the request
 			// or we got some screwy response.. display an error and log it for debugging
-			elgg.register_error(elgg.echo('file:uploadfailed'));
+			elgg.register_error(elgg.echo('file-extender:uploadfailedxhr'));
 			console.log('fail');
 			console.log(errorThrown);
 			console.log(textStatus);

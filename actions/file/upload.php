@@ -183,7 +183,7 @@ if ($new_file) {
 		add_to_river('river/object/file/create', 'create', elgg_get_logged_in_user_guid(), $file->guid);
 	} else {
 		// failed to save file object - nothing we can do about this
-		$error = elgg_echo("file:uploadfailed");
+		$error = elgg_echo("file-extender:uploadfailed", array('File not saved'));
 		register_error($error);
 	}
 
@@ -206,7 +206,7 @@ if ($new_file) {
 	if ($guid) {
 		system_message(elgg_echo("file:saved"));
 	} else {
-		register_error(elgg_echo("file:uploadfailed"));
+		register_error(elgg_echo("file-extender:uploadfailed", array('File not saved')));
 	}
 
 	// Check XHR
