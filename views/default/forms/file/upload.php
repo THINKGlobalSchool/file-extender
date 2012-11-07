@@ -10,7 +10,7 @@
  * 
  */
 if (file_extender_is_ie()) {
-	echo elgg_view('forms/file/upload_ie');
+	echo elgg_view('forms/file/upload_ie', $vars);
 	return;
 }
 
