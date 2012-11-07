@@ -16,14 +16,10 @@ elgg.provide('elgg.fileextender');
 elgg.fileextender.post_max_size = <?php echo ini_get("post_max_size"); ?>;
 
 elgg.fileextender.init = function() {
-	// Click handler for the file submit button
-	$('#submit-file').live('click', elgg.fileextender.submitClick);
 	
 	// Change handler for the old-school browse input
 	$(document).delegate('.file-browse .elgg-input-file', 'change', function(event){
 		// Hide the file input and container
-		console.log($('.file-browse'));
-
 	});
 
 	// Init fileupload
@@ -87,6 +83,9 @@ elgg.fileextender.init = function() {
 			$(e.originalEvent.target).addClass('file-dropzone-drag');
 		}
     });
+
+	// Click handler for the file submit button
+	$('#submit-file').live('click', elgg.fileextender.submitClick);
 }
 
 // Destroy the file uploader and unbind any events
@@ -133,6 +132,7 @@ elgg.fileextender.submitClick = function(event) {
 
 	// Get file data (set in the add callback of the fileuploader)
 	var data = $('.file-drag-upload').data('data');
+	
 
 	// Returns an object, with these fancy callbacks
 	var jqXHR = $('.file-drag-upload').fileupload('send',{files: data.files})
@@ -171,7 +171,7 @@ elgg.fileextender.submitClick = function(event) {
 			// Just keeping this here for future use/testing
 		});
 
-	event.preventDefault();
+		event.preventDefault();
 }
 
 elgg.register_hook_handler('init', 'system', elgg.fileextender.init);

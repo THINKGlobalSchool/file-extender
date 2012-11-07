@@ -9,6 +9,11 @@
  * @link http://www.thinkglobalschool.com/
  * 
  */
+if (file_extender_is_ie()) {
+	echo elgg_view('forms/file/upload_ie');
+	return;
+}
+
 elgg_load_js('elgg.fileextender');
 elgg_load_js('jQuery-File-Upload');
 elgg_load_css('elgg.fileextender');

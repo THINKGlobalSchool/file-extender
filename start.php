@@ -15,7 +15,6 @@ elgg_register_event_handler('init', 'system', 'file_extender_init');
 
 // Init
 function file_extender_init() {
-	
 	// Register JS
 	$extender_js = elgg_get_simplecache_url('js', 'fileextender/extender');
 	elgg_register_simplecache_view('js/fileextender/extender');
@@ -31,15 +30,18 @@ function file_extender_init() {
 	elgg_register_simplecache_view('css/fileextender/css');
 	elgg_register_css('elgg.fileextender', $extender_css);
 
-	// Extend file composer view
-	elgg_extend_view('file/composer', 'file-extender/init', 1);
+	// Don't override anything if we're using IE
+	if (!file_extender_is_ie()) {
+		// Extend file composer view
+		elgg_extend_view('file/composer', 'file-extender/init', 1);
 
-	// Unregister file/upload action
-	elgg_unregister_action("file/upload");
+		// Unregister file/upload action
+		elgg_unregister_action("file/upload");
 
-	// Register our own action
-	$action_path = elgg_get_plugins_path() . 'file-extender/actions/file';
-	elgg_register_action("file/upload", "$action_path/upload.php");
+		// Register our own action
+		$action_path = elgg_get_plugins_path() . 'file-extender/actions/file';
+		elgg_register_action("file/upload", "$action_path/upload.php");
+	}	
 
 	// Register a hook handler to post process file views
 	elgg_register_plugin_hook_handler('view', 'object/file', 'file_extender_object_view_handler');
@@ -77,4 +79,12 @@ function file_extender_object_view_handler($hook, $type, $return, $params) {
 	$return = str_replace($file->getURL(), $download_url, $return);
 
 	return $return;
+}
+
+function file_extender_is_ie() {
+	if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)) {
+		return true;
+	} else {
+		return false;
+	}
 }
