@@ -38,7 +38,9 @@ elgg.fileextender.init = function() {
 
 			// Check file size
 			if (data.files[0].size > elgg.fileextender.post_max_size) {
-				elgg.register_error(elgg.echo('file-extender:filetoolarge'));
+				var size = elgg.fileextender.bytesToSize(elgg.fileextender.post_max_size);
+
+				elgg.register_error(elgg.echo('file-extender:filetoolarge', [size]));
 				e.preventDefault();
 			}
 		},
@@ -174,5 +176,19 @@ elgg.fileextender.submitClick = function(event) {
 
 		event.preventDefault();
 }
+
+/**
+ * Convert number of bytes into human readable format
+ *
+ * @param integer bytes     Number of bytes to convert
+ * @param integer precision Number of digits after the decimal separator
+ * @return string
+ */
+elgg.fileextender.bytesToSize = function(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return 'n/a';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+};
 
 elgg.register_hook_handler('init', 'system', elgg.fileextender.init);
