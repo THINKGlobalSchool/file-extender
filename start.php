@@ -73,10 +73,10 @@ function file_calculate_size($size) {
 function file_extender_object_view_handler($hook, $type, $return, $params) {
 	$file = $params['vars']['entity'];
 
-	// Replace all first occurances of the file link with a direct download link
+	// Replace the first occurance (the file icon's) link with a direct download link
 	$download_url = elgg_get_site_url() . "file/download/$file->guid";
 
-	$return = str_replace($file->getURL(), $download_url, $return);
+	$return = (substr_replace($return, $download_url, strpos($return, $file->getURL()), strlen($file->getURL())));
 
 	return $return;
 }
