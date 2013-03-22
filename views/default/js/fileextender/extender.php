@@ -16,6 +16,7 @@ elgg.provide('elgg.fileextender');
 elgg.fileextender.post_max_size = <?php echo ini_get("post_max_size"); ?>;
 
 elgg.fileextender.init = function() {
+
 	// Change handler for the old-school browse input
 	$(document).delegate('.file-browse .elgg-input-file', 'change', function(event){
 		// Hide the file input and container
@@ -45,6 +46,7 @@ elgg.fileextender.init = function() {
 			}
 		},
 		add: function (e, data) {
+
 			// Get the dropped file
 			var file = data.files[0];
 

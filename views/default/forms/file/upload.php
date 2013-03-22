@@ -15,7 +15,9 @@ if (file_extender_is_ie()) {
 }
 
 elgg_load_js('elgg.fileextender');
-elgg_load_js('jQuery-File-Upload');
+elgg_load_js('jquery.ui.widget');
+elgg_load_js('jquery-file-upload');
+elgg_load_js('jquery.iframe-transport');
 elgg_load_css('elgg.fileextender');
 
 // once elgg_view stops throwing all sorts of junk into $vars, we can use 

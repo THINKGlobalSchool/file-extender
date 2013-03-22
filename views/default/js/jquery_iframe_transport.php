@@ -1,6 +1,6 @@
 <?php
 /**
- * File-extender jQuery File Upload simplecache view
+ * File-extender jquery.iframe-transport simplecache view
  * 
  * @package File-Extender
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU Public License version 2
@@ -12,6 +12,6 @@
 
 $js_path = elgg_get_config('path');
 
-$fileupload_path = "{$js_path}mod/file-extender/vendors/jquery-file-upload/jquery.fileupload.js";
+$transport_path = "{$js_path}mod/file-extender/vendors/jquery-file-upload/jquery.iframe-transport.js";
 
-include $fileupload_path;
+include $transport_path;
