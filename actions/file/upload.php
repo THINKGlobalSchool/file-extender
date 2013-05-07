@@ -93,7 +93,7 @@ $file->description = $desc;
 $file->access_id = $access_id;
 $file->container_guid = $container_guid;
 
-$tags = explode(",", $tags);
+$tags = string_to_tag_array($tags);
 $file->tags = $tags;
 
 // we have a file upload, so process it
