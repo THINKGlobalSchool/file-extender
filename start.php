@@ -40,6 +40,11 @@ function file_extender_init() {
 	elgg_register_simplecache_view('css/fileextender/css');
 	elgg_register_css('elgg.fileextender', $extender_css);
 
+	// Register a page handler, so we can have nice URLs
+	elgg_unregister_page_handler('file');
+
+	elgg_register_page_handler('file', 'file_extender_page_handler');
+
 	// Don't override anything if we're using IE
 	if (!file_extender_is_ie()) {
 		// Extend file composer view
@@ -55,6 +60,73 @@ function file_extender_init() {
 
 	// Register a hook handler to post process file views
 	elgg_register_plugin_hook_handler('view', 'object/file', 'file_extender_object_view_handler');
+}
+
+/**
+ * Dispatches file pages.
+ * URLs take the form of
+ *  All files:       file/all
+ *  User's files:    file/owner/<username>
+ *  Friends' files:  file/friends/<username>
+ *  View file:       file/view/<guid>/<title>
+ *  New file:        file/add/<guid>
+ *  Edit file:       file/edit/<guid>
+ *  Group files:     file/group/<guid>/all
+ *  Download:        file/download/<guid>
+ *
+ * Title is ignored
+ *
+ * @param array $page
+ * @return bool
+ */
+function file_extender_page_handler($page) {
+
+	if (!isset($page[0])) {
+		$page[0] = 'all';
+	}
+
+	$file_dir = elgg_get_plugins_path() . 'file/pages/file';
+
+	$page_type = $page[0];
+	switch ($page_type) {
+		case 'owner':
+			include "$file_dir/owner.php";
+			break;
+		case 'friends':
+			include "$file_dir/friends.php";
+			break;
+		case 'read': // Elgg 1.7 compatibility
+			register_error(elgg_echo("changebookmark"));
+			forward("file/view/{$page[1]}");
+			break;
+		case 'view':
+			set_input('guid', $page[1]);
+			include "$file_dir/view.php";
+			break;
+		case 'add':
+			include "$file_dir/upload.php";
+			break;
+		case 'edit':
+			set_input('guid', $page[1]);
+			include "$file_dir/edit.php";
+			break;
+		case 'search':
+			include "$file_dir/search.php";
+			break;
+		case 'group':
+			include "$file_dir/owner.php";
+			break;
+		case 'all':
+			include "$file_dir/world.php";
+			break;
+		case 'download':
+			set_input('guid', $page[1]);
+			include "$file_dir/download.php";
+			break;
+		default:
+			return false;
+	}
+	return true;
 }
 
 // Calculate file size for display
