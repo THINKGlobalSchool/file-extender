@@ -151,7 +151,7 @@ elgg.fileextender.submitClick = function(event) {
 				window.onbeforeunload = function() {};
 
 				// Good to go, forward to output
-				window.location = result.output;
+				window.top.location = result.output;
 			} else {
 				// There was an error, display it
 				elgg.register_error(result.system_messages.error);
