@@ -17,6 +17,7 @@ $english = array(
 	'file-extender:filetoolarge' => 'File size must be less than %s',
 	'file-extender:grouperror' => 'You cannot post files to this group',
 	'file-extender:replace' => '(Drop new file to replace)',
+	'file-extender:filter' => 'Filter:',
 
 	// More useful upload failed errors
 	'file-extender:uploadfailed' => 'Sorry; we could not save your file. (%s)',
