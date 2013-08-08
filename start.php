@@ -205,6 +205,7 @@ function file_extender_handle_all_page() {
 	$file_type = preg_replace('[\W]', '', get_input('tag'));
 
 	if ($file_type) {
+		elgg_push_breadcrumb(elgg_echo('file'), "file/all");
 		elgg_push_breadcrumb(elgg_echo("file:type:$file_type"));
 		$title = elgg_echo('all') . ' ' . elgg_echo("file:type:$file_type");
 	} else {
