@@ -136,17 +136,11 @@ function file_extender_page_handler($page) {
 }
 
 // Calculate file size for display
-function file_calculate_size($size) {
-    if (!is_numeric($size)) {
-        return '';
-    }
-    if ($size >= 1000000000) {
-        return number_format(($size / 1000000000), 2) . ' GB';
-    }
-    if ($size >= 1000000) {
-        return number_format(($size / 1000000), 2) . ' MB';
-    }
-    return number_format(($size / 1000), 2) . ' KB';
+function file_calculate_size($size, $precision = 2) {
+    $base = log($size) / log(1024);
+    $suffixes = array('', 'kb', 'MB', 'GB', 'TB');   
+
+    return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
 }
 
 /**

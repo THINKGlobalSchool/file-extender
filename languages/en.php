@@ -14,10 +14,11 @@ $english = array(
 	'file-extender:group' => 'Post to group',
 	'file-extender:none' => 'None',
 	'file-extender:toomanyfiles' => 'You can only upload one file at a time',
-	'file-extender:filetoolarge' => 'File size must be less than %s',
+	'file-extender:filetoolarge' => 'The file size exceeds allowed limit (%s)',
 	'file-extender:grouperror' => 'You cannot post files to this group',
 	'file-extender:replace' => '(Drop new file to replace)',
 	'file-extender:filter' => 'Filter:',
+	'file-extender:upload_limit' => 'Maximum allowed file size is %s',
 
 	// More useful upload failed errors
 	'file-extender:uploadfailed' => 'Sorry; we could not save your file. (%s)',

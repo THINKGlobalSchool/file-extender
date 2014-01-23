@@ -13,7 +13,7 @@
 //<script>
 elgg.provide('elgg.fileextender');
 
-elgg.fileextender.post_max_size = <?php echo ini_get("post_max_size"); ?>;
+elgg.fileextender.post_max_size = <?php echo elgg_get_ini_setting_in_bytes("post_max_size"); ?>;
 
 elgg.fileextender.init = function() {
 
@@ -36,56 +36,63 @@ elgg.fileextender.init = function() {
 				elgg.register_error(elgg.echo('file-extender:toomanyfiles'));
 				e.preventDefault();
 			}
-
-			// Check file size
-			if (data.files[0].size > elgg.fileextender.post_max_size) {
-				var size = elgg.fileextender.bytesToSize(elgg.fileextender.post_max_size);
-
-				elgg.register_error(elgg.echo('file-extender:filetoolarge', [size]));
-				e.preventDefault();
-			}
 		},
 		add: function (e, data) {
 
 			// Get the dropped file
 			var file = data.files[0];
 
-			// Fade in the rest of the form
-			$('.file-extender-hidden-form').fadeIn('slow');
-			
-			// Fade out the file input container
-			$('.file-browse').toggle();
 
-			// Set title on the form
-			$('.file-drop-title').val(file.name);
 
-			// Set file data on the input, to be used with click event later
-			$('.file-drag-upload').data('data', data);
+			// Check file size
+			if (file.size > elgg.fileextender.post_max_size) {
+				var size = elgg.fileextender.bytesToSize(elgg.fileextender.post_max_size);
 
-			// Remove dropzone classes and display info
-			var $div = $('#file-dropzone-div');
-			$div.removeClass('file-dropzone file-dropzone-background');
+				elgg.register_error(elgg.echo('file-extender:filetoolarge', [size]));
+				e.preventDefault();
+			} else {
+				// Fade in the rest of the form
+				$('.file-extender-hidden-form').fadeIn('slow');
+				
+				// Fade out the file input container
+				$('.file-browse').hide();
 
-			var $drop_name = $(document.createElement('span'));
-			$drop_name.addClass('file-name');
-			$drop_name.html(file.name);
+				// Set title on the form
+				$('.file-drop-title').val(file.name);
 
-			var $drop_size = $(document.createElement('span'));
-			$drop_size.addClass('file-size');
-			$drop_size.html(elgg.fileextender.calculateSize(file.size));
+				// Set file data on the input, to be used with click event later
+				$('.file-drag-upload').data('data', data);
 
-			var $drop_info = $(document.createElement('span'));
-			$drop_info.addClass('file-drop-info');
-			$drop_info.append($drop_name);
-			$drop_info.append($drop_size);
+				// Remove dropzone classes and display info
+				var $div = $('#file-dropzone-div');
+				$div.removeClass('file-dropzone file-dropzone-background');
 
-			$div.html($drop_info);
+				var $drop_name = $(document.createElement('span'));
+				$drop_name.addClass('file-name');
+				$drop_name.html(file.name);
+
+				var $drop_size = $(document.createElement('span'));
+				$drop_size.addClass('file-size');
+				$drop_size.html(elgg.fileextender.calculateSize(file.size));
+
+				var $drop_info = $(document.createElement('span'));
+				$drop_info.addClass('file-drop-info');
+				$drop_info.append($drop_name);
+				$drop_info.append($drop_size);
+
+				$div.html($drop_info);
+			}
 		},
 		dragover: function (e, data) {
 			// Add fancy dragover class
 			$(e.originalEvent.target).addClass('file-dropzone-drag');
 		}
     });
+
+	// Need to manually bind dragleave here
+	$('#file-dropzone-div').bind('dragleave', function (e) {
+		$(e.originalEvent.target).removeClass('file-dropzone-drag');
+	});
 
 	// Click handler for the file submit button
 	$('#submit-file').live('click', elgg.fileextender.submitClick);
@@ -187,10 +194,10 @@ elgg.fileextender.submitClick = function(event) {
  * @return string
  */
 elgg.fileextender.bytesToSize = function(bytes) {
-    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    if (bytes == 0) return 'n/a';
-    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+	var sizes = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
+	if (bytes == 0) return '0 Bytes';
+	var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+	return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 };
 
 elgg.register_hook_handler('init', 'system', elgg.fileextender.init);
