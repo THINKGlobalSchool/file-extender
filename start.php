@@ -137,10 +137,14 @@ function file_extender_page_handler($page) {
 
 // Calculate file size for display
 function file_calculate_size($size, $precision = 2) {
-    $base = log($size) / log(1024);
-    $suffixes = array('', 'kb', 'MB', 'GB', 'TB');   
+	if (!$size || $size < 0) {
+		return false;
+	}
 
-    return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
+	$base = log($size) / log(1024);
+	$suffixes = array('B', 'kB', 'MB', 'GB', 'TB');   
+
+	return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
 }
 
 /**
