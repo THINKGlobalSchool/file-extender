@@ -19,6 +19,7 @@ $english = array(
 	'file-extender:replace' => '(Drop new file to replace)',
 	'file-extender:filter' => 'Filter:',
 	'file-extender:upload_limit' => 'Maximum allowed file size is %s',
+	'file-extender:upload_notice' => 'Notice: There is a known bug/issue when uploading iWork files (Pages, Keynote and Numbers) in Chrome/Firefox. Please use Safari to upload these files until the issue is resolved.',
 
 	// More useful upload failed errors
 	'file-extender:uploadfailed' => 'Sorry; we could not save your file. (%s)',

@@ -14,6 +14,8 @@ if (file_extender_is_ie()) {
 	return;
 }
 
+elgg_dump(file_calculate_size(-19));
+
 elgg_load_js('elgg.fileextender');
 elgg_load_js('jquery.ui.widget');
 elgg_load_js('jquery-file-upload');
@@ -143,9 +145,12 @@ $submit_input = elgg_view('input/submit', array(
 	'class' => "elgg-button elgg-button-submit $submit_class",
 ));
 
+$upload_notice = elgg_echo('file-extender:upload_notice');
+
 $upload_limit = elgg_echo('file-extender:upload_limit', array(file_calculate_size(elgg_get_ini_setting_in_bytes("post_max_size"))));
 
 $content = <<<HTML
+	<span class="mbm message warning">$upload_notice</span>
 	<span class="mbm elgg-text-help">$upload_limit</span>
 	$drop_zone
 	<div class='file-browse'>
