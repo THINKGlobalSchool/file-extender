@@ -23,21 +23,6 @@ function file_extender_init() {
 	$filter_js = elgg_get_simplecache_url('js', 'fileextender/filter');
 	elgg_register_simplecache_view('js/fileextender/filter');
 	elgg_register_js('elgg.file_filter', $filter_js);
-	
-	// Register jquery ui widget (for jquery file upload)
-	$js = elgg_get_simplecache_url('js', 'jquery_ui_widget');
-	elgg_register_simplecache_view('js/jquery_ui_widget');
-	elgg_register_js('jquery.ui.widget', $js);
-	
-	// Register JS File Upload
-	$j_js = elgg_get_simplecache_url('js', 'jquery_file_upload');
-	elgg_register_simplecache_view('js/jquery_file_upload');
-	elgg_register_js('jquery-file-upload', $j_js);
-
-	// Register JS jquery.iframe-transport (for jquery-file-upload)
-	$j_js = elgg_get_simplecache_url('js', 'jquery_iframe_transport');
-	elgg_register_simplecache_view('js/jquery_iframe_transport');
-	elgg_register_js('jquery.iframe-transport', $j_js);
 
 	// Register CSS
 	$extender_css = elgg_get_simplecache_url('css', 'fileextender/css');

@@ -5,7 +5,7 @@
  * @package File-Extender
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU Public License version 2
  * @author Jeff Tilson
- * @copyright THINK Global School 2010
+ * @copyright THINK Global School 2010 - 2014
  * @link http://www.thinkglobalschool.com/
  * 
  */
@@ -16,7 +16,6 @@ elgg.provide('elgg.fileextender');
 elgg.fileextender.post_max_size = <?php echo elgg_get_ini_setting_in_bytes("post_max_size"); ?>;
 
 elgg.fileextender.init = function() {
-
 	// Change handler for the old-school browse input
 	$(document).delegate('.file-browse .elgg-input-file', 'change', function(event){
 		// Hide the file input and container
@@ -29,7 +28,7 @@ elgg.fileextender.init = function() {
 		fileInput: $('input.file-drag-upload'),
 		drop: function (e, data) {
 			// Remove drag class
-			$(e.originalEvent.target).removeClass('file-dropzone-drag');
+			$(e.originalEvent.delegatedEvent.target).removeClass('file-dropzone-drag');
 
 			// Make sure we're not dropping multiple files
 			if (data.files.length > 1) {
@@ -85,7 +84,7 @@ elgg.fileextender.init = function() {
 		},
 		dragover: function (e, data) {
 			// Add fancy dragover class
-			$(e.originalEvent.target).addClass('file-dropzone-drag');
+			$(e.originalEvent.delegatedEvent.target).addClass('file-dropzone-drag');
 		}
     });
 
@@ -200,4 +199,7 @@ elgg.fileextender.bytesToSize = function(bytes) {
 	return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 };
 
-elgg.register_hook_handler('init', 'system', elgg.fileextender.init);
+
+require(['jquery.iframe-transport', 'jquery.fileupload'], function() {
+	elgg.register_hook_handler('init', 'system', elgg.fileextender.init);
+});
