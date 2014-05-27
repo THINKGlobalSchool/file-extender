@@ -17,16 +17,13 @@ elgg_register_event_handler('init', 'system', 'file_extender_init');
 function file_extender_init() {
 	// Register JS
 	$extender_js = elgg_get_simplecache_url('js', 'fileextender/extender');
-	elgg_register_simplecache_view('js/fileextender/extender');
 	elgg_register_js('elgg.fileextender', $extender_js);
 
 	$filter_js = elgg_get_simplecache_url('js', 'fileextender/filter');
-	elgg_register_simplecache_view('js/fileextender/filter');
 	elgg_register_js('elgg.file_filter', $filter_js);
 
 	// Register CSS
 	$extender_css = elgg_get_simplecache_url('css', 'fileextender/css');
-	elgg_register_simplecache_view('css/fileextender/css');
 	elgg_register_css('elgg.fileextender', $extender_css);
 
 	// Register a page handler, so we can have nice URLs
