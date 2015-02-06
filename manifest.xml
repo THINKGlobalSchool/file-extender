@@ -3,13 +3,13 @@
 	<name>File Extender</name>
 	<id>file-extender</id>
 	<author>Jeff Tilson</author>
-	<version>1.9</version>
+	<version>1.10</version>
 	<category>tgs</category>
 	<category>enhancement</category>
 	<blurb>File Extender Plugin</blurb>
 	<description>Extends and improves upon the file plugins functionality</description>
 	<website>http://www.thinkglobalschool.org</website>
-	<copyright>THINK Global School 2010 - 2014</copyright>
+	<copyright>THINK Global School 2010 - 2015</copyright>
 	<license>GNU General Public License version 2</license>
 	<requires>
 		<type>elgg_release</type>
@@ -24,7 +24,7 @@
 	<requires>
 		<type>plugin</type>
 		<name>jqueryfileupload</name>
-		<version>1.9</version>
+		<version>1.10</version>
 		<comparison>ge</comparison>
 	</requires>
 	<activate_on_install>true</activate_on_install>

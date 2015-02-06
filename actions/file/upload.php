@@ -6,7 +6,7 @@
  * @package File-Extender
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU Public License version 2
  * @author Jeff Tilson
- * @copyright THINK Global School 2010
+ * @copyright THINK Global School 2010 - 2015
  * @link http://www.thinkglobalschool.com/
  * 
  */
@@ -65,7 +65,7 @@ if ($new_file) {
 
 	// if no title on new upload, grab filename
 	if (empty($title)) {
-		$title = $_FILES['upload']['name'];
+		$title = htmlspecialchars($_FILES['upload']['name'], ENT_QUOTES, 'UTF-8');
 	}
 
 } else {
@@ -165,6 +165,23 @@ if (isset($_FILES['upload']['name']) && !empty($_FILES['upload']['name'])) {
 			$file->largethumb = $prefix."largethumb".$filestorename;
 			unset($thumblarge);
 		}
+	} elseif ($file->icontime) {
+		// if it is not an image, we do not need thumbnails
+		unset($file->icontime);
+		
+		$thumb = new ElggFile();
+		
+		$thumb->setFilename($prefix . "thumb" . $filestorename);
+		$thumb->delete();
+		unset($file->thumbnail);
+		
+		$thumb->setFilename($prefix . "smallthumb" . $filestorename);
+		$thumb->delete();
+		unset($file->smallthumb);
+		
+		$thumb->setFilename($prefix . "largethumb" . $filestorename);
+		$thumb->delete();
+		unset($file->largethumb);
 	}
 } else {
 	// not saving a file but still need to save the entity to push attributes to database
@@ -180,7 +197,13 @@ if ($new_file) {
 	if ($guid) {
 		$message = elgg_echo("file:saved");
 		system_message($message);
-		add_to_river('river/object/file/create', 'create', elgg_get_logged_in_user_guid(), $file->guid);
+		elgg_create_river_item(array(
+			'view' => 'river/object/file/create',
+			'action_type' => 'create',
+			'subject_guid' => elgg_get_logged_in_user_guid(),
+			'object_guid' => $file->guid,
+		));
+
 	} else {
 		// failed to save file object - nothing we can do about this
 		$error = elgg_echo("file-extender:uploadfailed", array('File not saved'));

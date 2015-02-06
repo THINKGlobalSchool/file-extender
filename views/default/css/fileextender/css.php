@@ -85,3 +85,7 @@
 	color: #AAAAAA;
 	float: right;
 }
+
+.fileextender-filter-dropdown label {
+	padding-right: 5px;
+}

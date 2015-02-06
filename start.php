@@ -19,8 +19,8 @@ function file_extender_init() {
 	$extender_js = elgg_get_simplecache_url('js', 'fileextender/extender');
 	elgg_register_js('elgg.fileextender', $extender_js);
 
-	$filter_js = elgg_get_simplecache_url('js', 'fileextender/filter');
-	elgg_register_js('elgg.file_filter', $filter_js);
+	$tweak_js = elgg_get_simplecache_url('js', 'fileextender/tweaks');
+	elgg_register_js('elgg.fileextender_tweaks', $tweak_js);
 
 	// Register CSS
 	$extender_css = elgg_get_simplecache_url('css', 'fileextender/css');
@@ -42,13 +42,7 @@ function file_extender_init() {
 		// Register our own action
 		$action_path = elgg_get_plugins_path() . 'file-extender/actions/file';
 		elgg_register_action("file/upload", "$action_path/upload.php");
-	}	
-
-	// Register a hook handler to post process file views
-	elgg_register_plugin_hook_handler('view', 'object/file', 'file_extender_object_view_handler');
-
-	// Hook into menu:page registration
-	elgg_register_plugin_hook_handler('register', 'menu:page', 'file_extender_page_menu_handler', 9999);
+	}
 }
 
 /**
@@ -76,7 +70,8 @@ function file_extender_page_handler($page) {
 
 	$file_dir = elgg_get_plugins_path() . 'file/pages/file';
 
-	elgg_load_js('elgg.file_filter');
+	elgg_load_js('elgg.fileextender_tweaks');
+	elgg_load_css('elgg.fileextender');
 
 	$page_type = $page[0];
 	switch ($page_type) {
@@ -85,10 +80,6 @@ function file_extender_page_handler($page) {
 			break;
 		case 'friends':
 			include "$file_dir/friends.php";
-			break;
-		case 'read': // Elgg 1.7 compatibility
-			register_error(elgg_echo("changebookmark"));
-			forward("file/view/{$page[1]}");
 			break;
 		case 'view':
 			set_input('guid', $page[1]);
@@ -127,40 +118,6 @@ function file_calculate_size($size, $precision = 2) {
 	$suffixes = array('B', 'kB', 'MB', 'GB', 'TB');   
 
 	return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
-}
-
-/**
- * Post process file object views to replace file icon link
- *
- * @param unknown_type $hook
- * @param unknown_type $type
- * @param unknown_type $return
- * @param unknown_type $params
- * @return unknown
- */
-function file_extender_object_view_handler($hook, $type, $return, $params) {
-	$file = $params['vars']['entity'];
-
-	// Replace the first occurance (the file icon's) link with a direct download link
-	$download_url = elgg_get_site_url() . "file/download/$file->guid";
-
-	$return = (substr_replace($return, $download_url, strpos($return, $file->getURL()), strlen($file->getURL())));
-
-	return $return;
-}
-
-/**
- * Hook into page menu registration to modify items
- */
-function file_extender_page_menu_handler($hook, $type, $items, $params) {
-	// Remove file type menu items
-	foreach ($items as $idx => $item) {
-		if (strpos($item->getName(), 'file:') === 0) {
-		//	unset($items[$idx]);
-		}
-	}
-
-	return $items;
 }
 
 function file_extender_is_ie() {
@@ -350,7 +307,7 @@ function file_extender_register_type_menu_items($container_guid = "", $friends =
 		$types_options[$type->tag] = elgg_echo("file:type:$type->tag");
 	}
 
-	$filter_dropdown = elgg_view('input/filter_dropdown', array(
+	$filter_dropdown = elgg_view('file-extender/filter_dropdown', array(
 		'label' => elgg_echo('file-extender:filter'),
 		'options_values' => $types_options,
 		'id' => 'file-extender-type-filter',
