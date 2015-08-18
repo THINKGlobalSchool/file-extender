@@ -15,6 +15,8 @@ if (file_extender_is_ie()) {
 }
 
 elgg_load_js('elgg.fileextender');
+elgg_load_js('elgg.fileextender_tweaks');
+elgg_load_css('elgg.fileextender');
 
 // once elgg_view stops throwing all sorts of junk into $vars, we can use 
 $title = elgg_extract('title', $vars, '');
